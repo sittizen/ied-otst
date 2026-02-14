@@ -1,0 +1,102 @@
+{
+  "version": 1,
+  "sessionId": "a438da4d-18fc-43b7-b3d5-9e55d42e4fec",
+  "status": "completed",
+  "startedAt": "2026-02-14T16:48:44.797Z",
+  "updatedAt": "2026-02-14T16:48:49.182Z",
+  "currentIteration": 0,
+  "maxIterations": 1,
+  "tasksCompleted": 0,
+  "isPaused": false,
+  "agentPlugin": "opencode",
+  "trackerState": {
+    "plugin": "json",
+    "prdPath": "./tasks/prd.json",
+    "totalTasks": 13,
+    "tasks": [
+      {
+        "id": "US-001",
+        "title": "Create core database schema and migrations",
+        "status": "open",
+        "completedInSession": false
+      },
+      {
+        "id": "US-002",
+        "title": "Implement GM registration",
+        "status": "open",
+        "completedInSession": false
+      },
+      {
+        "id": "US-003",
+        "title": "Implement session login, logout, and whoami",
+        "status": "open",
+        "completedInSession": false
+      },
+      {
+        "id": "US-004",
+        "title": "Implement GM-only lobby creation with DM auto-membership",
+        "status": "open",
+        "completedInSession": false
+      },
+      {
+        "id": "US-005",
+        "title": "Implement lobby details access for members only",
+        "status": "open",
+        "completedInSession": false
+      },
+      {
+        "id": "US-006",
+        "title": "Allow DM to create email invites for new players",
+        "status": "open",
+        "completedInSession": false
+      },
+      {
+        "id": "US-007",
+        "title": "Accept email invite to sign up player and activate membership",
+        "status": "open",
+        "completedInSession": false
+      },
+      {
+        "id": "US-008",
+        "title": "Allow DM to invite existing players by user_id",
+        "status": "open",
+        "completedInSession": false
+      },
+      {
+        "id": "US-009",
+        "title": "Expose pending invites list for authenticated players",
+        "status": "open",
+        "completedInSession": false
+      },
+      {
+        "id": "US-010",
+        "title": "Allow existing players to accept or decline invites",
+        "status": "open",
+        "completedInSession": false
+      },
+      {
+        "id": "US-011",
+        "title": "Allow players to leave a lobby",
+        "status": "open",
+        "completedInSession": false
+      },
+      {
+        "id": "US-012",
+        "title": "Allow DMs to ban and unban lobby members",
+        "status": "open",
+        "completedInSession": false
+      },
+      {
+        "id": "US-013",
+        "title": "Add tenancy enforcement tests for cross-lobby safety",
+        "status": "open",
+        "completedInSession": false
+      }
+    ]
+  },
+  "iterations": [],
+  "skippedTaskIds": [],
+  "cwd": "/home/sc/workspace/xxx",
+  "activeTaskIds": [],
+  "subagentPanelVisible": false
+}
