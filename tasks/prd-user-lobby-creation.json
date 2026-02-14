@@ -1,0 +1,155 @@
+{
+  "name": "Open Table RPG Sessions — User + Lobby Creation (MVP)",
+  "description": "Build the first slice of a web app that supports open-table RPG organization by implementing account creation, authentication, lobby creation, and lobby membership management via invites. This phase focuses strictly on “who can access which lobby” and “how players join/leave,” with strong separation between lobbies.",
+  "branchName": "feature/open-table-rpg-sessions-user-lobby-creation-mvp",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "GM account registration + session login/logout",
+      "description": "As a GM, I want to create an account and log in so that I can manage my lobbies.",
+      "acceptanceCriteria": [
+        "API supports GM registration with `email`, `password`, `display_name`.",
+        "Email is enforced as globally unique (clear 409-style error).",
+        "Password is stored as a secure hash (no plaintext).",
+        "API supports login that creates a server-side session and sets a cookie.",
+        "API supports logout that invalidates the session.",
+        "“Who am I” endpoint returns the authenticated user identity and account_type."
+      ],
+      "priority": 1,
+      "passes": true,
+      "labels": [],
+      "dependsOn": [],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-002",
+      "title": "Lobby creation (GM-only) + auto-membership as DM",
+      "description": "As a GM, I want to create a lobby so that I can run an open table.",
+      "acceptanceCriteria": [
+        "Only authenticated `gm` users can create lobbies.",
+        "Creating a lobby auto-creates a `LobbyMember` row for the GM with `status=active`.",
+        "Each lobby has exactly one `dm` member (enforced by constraints or application logic).",
+        "API can fetch lobby details for members of that lobby."
+      ],
+      "priority": 2,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-003",
+      "title": "Invite a new player by email (token link; no sending)",
+      "description": "As a GM, I want to create an email invite so that a new player can sign up and join my lobby.",
+      "acceptanceCriteria": [
+        "Only the lobby’s GM (dm) can create invites for that lobby.",
+        "Invite creation returns an invite URL containing a token (no email delivery required).",
+        "Invite token is single-use and expires in 7 days.",
+        "Invite is bound to a specific `target_email`.",
+        "If `target_email` already belongs to an existing user, invite-by-email is rejected with a clear error directing the GM to use user_id invites instead.",
+        "A corresponding `LobbyMember` entry is created/updated to reflect `status=invited` for that target (implementation detail allowed; behavior must match: lobby shows as invited, not active)."
+      ],
+      "priority": 3,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-004",
+      "title": "Accept email invite — player signs up and becomes active member",
+      "description": "As an invited player, I want to use the invite link to create my account so that I can join the lobby.",
+      "acceptanceCriteria": [
+        "Invite acceptance endpoint validates: token exists, status is pending, not expired, not used.",
+        "Signup email must exactly match the invite’s `target_email` (case normalization rules must be defined and consistent).",
+        "On success: create a `player` user account, mark invite `accepted`, mark membership `active`.",
+        "Acceptance is atomic (no partial state if DB errors occur).",
+        "If the lobby membership is currently `banned`, acceptance is blocked until unbanned."
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-005",
+      "title": "Invite an existing user by user_id (pending invites)",
+      "description": "As a GM, I want to invite an existing player by user_id so that they can accept from their account.",
+      "acceptanceCriteria": [
+        "Only the lobby’s GM (dm) can create user_id invites for that lobby.",
+        "The target user must exist and must be `account_type=player` (reject inviting a `gm` account).",
+        "Creating the invite results in a `pending` invite tied to `target_user_id`.",
+        "The invited user can see the invite in a “pending invites” API response.",
+        "If the user is banned in that lobby, invite creation is rejected until ban is lifted."
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-006",
+      "title": "Existing player accepts/declines a pending invite",
+      "description": "As an existing player, I want to accept or decline pending invites so that I control which lobbies I join.",
+      "acceptanceCriteria": [
+        "Authenticated player can list their pending invites.",
+        "Accepting an invite makes the player an `active` `LobbyMember` of that lobby and marks invite `accepted`.",
+        "Declining an invite marks invite `declined` and does not create an active membership.",
+        "Users cannot accept/decline invites that don’t target them.",
+        "Accept/decline fails cleanly for revoked/expired/used invites."
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-007",
+      "title": "Player leaves a lobby",
+      "description": "As a player, I want to leave a lobby so that I can stop participating.",
+      "acceptanceCriteria": [
+        "An active player can leave a lobby, changing membership to `status=left` and setting `left_at`.",
+        "After leaving, the user no longer has access to lobby-protected endpoints for that lobby.",
+        "The lobby’s DM cannot be “left” via this endpoint (returns clear error)."
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-008",
+      "title": "GM bans and unbans players in their lobby",
+      "description": "As a GM, I want to ban/unban players so that I can moderate my lobby.",
+      "acceptanceCriteria": [
+        "Only the lobby’s DM can ban/unban members of that lobby.",
+        "Banning sets `status=banned`, `banned_at`, and optional `ban_reason`.",
+        "Unbanning restores `status=active` only if the prior state was banned; timestamps update accordingly.",
+        "Banned users cannot access lobby-protected endpoints.",
+        "Banned users cannot be invited or accept invites until unbanned."
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-009",
+      "title": "Authorization and tenancy enforcement (cross-lobby safety)",
+      "description": "As the system, I must enforce permissions so that no GM can affect another GM’s lobby.",
+      "acceptanceCriteria": [
+        "All lobby-scoped endpoints verify the caller is authorized for that lobby (DM vs member vs non-member).",
+        "Attempts to manage invites/members in other lobbies return 403/404 (pick one approach and apply consistently).",
+        "Automated tests cover: cross-lobby access denial, DM-only actions, banned user restrictions, expired invite behavior."
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-02-14T17:00:01.861Z",
+    "version": "1.0.0",
+    "sourcePrd": "tasks/prd-open-table-rpg-sessions-user-lobby-creation-mvp.md",
+    "updatedAt": "2026-02-14T17:11:27.654Z"
+  }
+}
