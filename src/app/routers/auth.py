@@ -64,7 +64,7 @@ def login(
         path="/",
     )
     return WhoAmIResponse(
-        id=user.id,
+        session_id=user.id,
         email=user.email,
         display_name=user.display_name,
         account_type=user.account_type,
@@ -87,7 +87,7 @@ def logout(
 @router.get("/whoami", response_model=WhoAmIResponse)
 def whoami(user: User = Depends(get_current_user)) -> WhoAmIResponse:
     return WhoAmIResponse(
-        id=user.id,
+        session_id=user.id,
         email=user.email,
         display_name=user.display_name,
         account_type=user.account_type,
