@@ -280,7 +280,7 @@ wheels = [
 ]
 
 [[package]]
-name = "open-table-rpg"
+name = "ied-otst"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
