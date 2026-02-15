@@ -79,43 +79,8 @@ FastAPI's `Depends()` for:
 ### Response Models
 Pydantic `BaseModel` subclasses as both request validation and response serialization. Router functions return Pydantic model instances directly.
 
-## Data Model (Current State)
-
-```mermaid
-erDiagram
-    User {
-        string id PK
-        string email UK
-        string password_hash
-        string display_name
-        enum account_type
-        datetime created_at
-    }
-    Session {
-        string id PK
-        string user_id FK
-        datetime created_at
-        datetime expires_at
-        datetime revoked_at
-    }
-    User ||--o{ Session : "has"
-```
-
 ### Known Gaps vs PRD
-- `AccountType` enum only has `GM` -- missing `PLAYER`.
-- `User` model missing `updated_at` field.
 - No `Lobby`, `LobbyMember`, or `Invite` models yet.
-- `gm_register` endpoint returns `WhoAmIResponse` but the schema has `session_id` field while register doesn't set a session cookie (inconsistent -- register creates user but doesn't log them in).
-- `WhoAmIResponse` uses `session_id` field name but login/whoami pass `user.id` into it (naming mismatch -- should probably be `id` or `user_id`).
-
-## API Routes (Current)
-
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| POST | `/api/gm/register` | No | Create GM account |
-| POST | `/api/login` | No | Login, set session cookie |
-| POST | `/api/logout` | Cookie | Revoke session, clear cookie |
-| GET | `/api/whoami` | Cookie | Return current user info |
 
 ## Quality & Tooling
 - **Linter/Formatter:** Ruff (line-length 100, py311 target, select E/F/I/B/UP, ignore B008)
@@ -124,12 +89,3 @@ erDiagram
 - **Package Manager:** uv (uv.lock present)
 - **Quality gate commands:** `uv run ruff check .`, `uv run ruff format --check .`, `uv run pytest`
 
-## Next Implementation Steps
-1. Add `PLAYER` to `AccountType` enum
-2. Add `updated_at` to `User` model
-3. Implement `Lobby` and `LobbyMember` models (US-002)
-4. Implement `Invite` model (US-003)
-5. Create lobby router with CRUD + membership endpoints
-6. Create invite router with create/accept/decline endpoints
-7. Add authorization dependencies for lobby-scoped actions
-8. Add automated tests
