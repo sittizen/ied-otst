@@ -17,7 +17,7 @@ class LoginRequest(BaseModel):
 
 
 class WhoAmIResponse(BaseModel):
-    session_id: str
+    user_id: str
     email: EmailStr
     display_name: str
     account_type: AccountType

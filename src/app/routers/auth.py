@@ -37,7 +37,7 @@ def gm_register(payload: GMRegisterRequest, db: Session = Depends(get_db)) -> Wh
         raise HTTPException(status_code=409, detail="Email already exists") from e
     db.refresh(user)
     return WhoAmIResponse(
-        session_id=user.id,
+        user_id=user.id,
         email=user.email,
         display_name=user.display_name,
         account_type=user.account_type,
@@ -64,7 +64,7 @@ def login(
         path="/",
     )
     return WhoAmIResponse(
-        session_id=user.id,
+        user_id=user.id,
         email=user.email,
         display_name=user.display_name,
         account_type=user.account_type,
@@ -87,7 +87,7 @@ def logout(
 @router.get("/whoami", response_model=WhoAmIResponse)
 def whoami(user: User = Depends(get_current_user)) -> WhoAmIResponse:
     return WhoAmIResponse(
-        session_id=user.id,
+        user_id=user.id,
         email=user.email,
         display_name=user.display_name,
         account_type=user.account_type,
