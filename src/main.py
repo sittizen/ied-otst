@@ -5,6 +5,7 @@ from fastapi import FastAPI
 
 from app.db import Base, engine
 from app.routers.auth import router as auth_router
+from app.routers.lobbies import router as lobbies_router
 
 
 def create_app() -> FastAPI:
@@ -15,6 +16,7 @@ def create_app() -> FastAPI:
         Base.metadata.create_all(bind=engine)
 
     app.include_router(auth_router)
+    app.include_router(lobbies_router)
     return app
 
 

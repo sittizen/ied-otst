@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel, EmailStr, Field
 
-from app.models import AccountType
+from app.models import AccountType, LobbyMemberStatus
 
 
 class GMRegisterRequest(BaseModel):
@@ -21,3 +21,20 @@ class WhoAmIResponse(BaseModel):
     email: EmailStr
     display_name: str
     account_type: AccountType
+
+
+class LobbyCreateRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=100)
+
+
+class LobbyMemberResponse(BaseModel):
+    user_id: str
+    status: LobbyMemberStatus
+    is_dm: bool
+
+
+class LobbyDetailResponse(BaseModel):
+    id: str
+    name: str
+    created_by_user_id: str
+    members: list[LobbyMemberResponse]

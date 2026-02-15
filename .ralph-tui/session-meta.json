@@ -1,0 +1,14 @@
+{
+  "id": "f4593915-5ede-46f6-8556-cfa0adbd46b5",
+  "status": "running",
+  "startedAt": "2026-02-15T06:46:10.383Z",
+  "updatedAt": "2026-02-15T06:46:10.384Z",
+  "agentPlugin": "opencode",
+  "trackerPlugin": "json",
+  "prdPath": "tasks/prd-user-lobby-creation.json",
+  "currentIteration": 0,
+  "maxIterations": 1,
+  "totalTasks": 0,
+  "tasksCompleted": 0,
+  "cwd": "/home/sc/workspace/ied"
+}

@@ -37,7 +37,7 @@ def gm_register(payload: GMRegisterRequest, db: Session = Depends(get_db)) -> Wh
         raise HTTPException(status_code=409, detail="Email already exists") from e
     db.refresh(user)
     return WhoAmIResponse(
-        id=user.id,
+        session_id=user.id,
         email=user.email,
         display_name=user.display_name,
         account_type=user.account_type,

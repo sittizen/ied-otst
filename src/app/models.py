@@ -4,7 +4,7 @@ import enum
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, Enum, ForeignKey, Index, String
+from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, Index, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base
@@ -16,6 +16,11 @@ def utcnow() -> datetime:
 
 class AccountType(enum.StrEnum):
     GM = "gm"
+    PLAYER = "player"
+
+
+class LobbyMemberStatus(enum.StrEnum):
+    ACTIVE = "active"
 
 
 class User(Base):
@@ -44,3 +49,36 @@ class Session(Base):
     revoked_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     user: Mapped[User] = relationship(back_populates="sessions")
+
+
+class Lobby(Base):
+    __tablename__ = "lobbies"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    created_by_user_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id"), nullable=False
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, nullable=False)
+
+    created_by_user: Mapped[User] = relationship()
+    members: Mapped[list[LobbyMember]] = relationship(back_populates="lobby")
+
+
+class LobbyMember(Base):
+    __tablename__ = "lobby_members"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    lobby_id: Mapped[str] = mapped_column(String(36), ForeignKey("lobbies.id"), nullable=False)
+    user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id"), nullable=False)
+    status: Mapped[LobbyMemberStatus] = mapped_column(
+        Enum(LobbyMemberStatus), nullable=False, default=LobbyMemberStatus.ACTIVE
+    )
+    is_dm: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, nullable=False)
+
+    lobby: Mapped[Lobby] = relationship(back_populates="members")
+    user: Mapped[User] = relationship()
+
+
+Index("ix_lobby_members_lobby_user_unique", LobbyMember.lobby_id, LobbyMember.user_id, unique=True)
