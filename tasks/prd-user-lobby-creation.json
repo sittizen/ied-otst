@@ -50,9 +50,10 @@
         "A corresponding `LobbyMember` entry is created/updated to reflect `status=invited` for that target (implementation detail allowed; behavior must match: lobby shows as invited, not active)."
       ],
       "priority": 3,
-      "passes": false,
+      "passes": true,
       "labels": [],
-      "dependsOn": []
+      "dependsOn": [],
+      "completionNotes": "Completed by agent"
     },
     {
       "id": "US-004",
@@ -151,6 +152,6 @@
     "createdAt": "2026-02-14T17:00:01.861Z",
     "version": "1.0.0",
     "sourcePrd": "tasks/prd-open-table-rpg-sessions-user-lobby-creation-mvp.md",
-    "updatedAt": "2026-02-15T06:48:48.337Z"
+    "updatedAt": "2026-02-15T07:02:41.756Z"
   }
 }

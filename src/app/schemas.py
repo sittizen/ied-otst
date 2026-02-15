@@ -28,7 +28,8 @@ class LobbyCreateRequest(BaseModel):
 
 
 class LobbyMemberResponse(BaseModel):
-    user_id: str
+    user_id: str | None
+    target_email: EmailStr | None
     status: LobbyMemberStatus
     is_dm: bool
 
@@ -38,3 +39,12 @@ class LobbyDetailResponse(BaseModel):
     name: str
     created_by_user_id: str
     members: list[LobbyMemberResponse]
+
+
+class EmailInviteCreateRequest(BaseModel):
+    target_email: EmailStr
+
+
+class EmailInviteCreateResponse(BaseModel):
+    invite_url: str
+    expires_in_seconds: int

@@ -46,26 +46,6 @@ A backend API for organizing **open-table RPG sessions** -- the kind of tabletop
 - Atomic operations (no partial state on failures).
 - Consistent invite lifecycle: pending -> accepted/declined/revoked/expired.
 
-## Current Implementation Status
-
-### Completed (US-001)
-- GM registration endpoint (`POST /api/gm/register`)
-- Login with cookie-based sessions (`POST /api/login`)
-- Logout with session revocation (`POST /api/logout`)
-- "Who am I" endpoint (`GET /api/whoami`)
-- Password hashing with Argon2
-- Email normalization and uniqueness enforcement
-
-### Not Yet Implemented (US-002 through US-009)
-- Lobby creation and details
-- Email invite creation and acceptance
-- User ID invite creation and accept/decline
-- Player leaves lobby
-- Ban/unban functionality
-- Cross-lobby authorization enforcement
-- Player account type (model only has `gm` in the AccountType enum)
-- `updated_at` field on User model
-
 ## Non-Goals (Out of Scope for MVP)
 - Email delivery (SMTP, templates, resend)
 - Frontend / UI

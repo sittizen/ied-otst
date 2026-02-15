@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "sessionId": "f4593915-5ede-46f6-8556-cfa0adbd46b5",
+  "sessionId": "1670ce33-2848-4542-8cad-0b1c2f84ffe0",
   "status": "running",
-  "startedAt": "2026-02-15T06:46:11.272Z",
-  "updatedAt": "2026-02-15T06:48:48.340Z",
+  "startedAt": "2026-02-15T06:59:44.993Z",
+  "updatedAt": "2026-02-15T07:02:41.758Z",
   "currentIteration": 0,
   "maxIterations": 1,
   "tasksCompleted": 0,
@@ -23,7 +23,7 @@
       {
         "id": "US-002",
         "title": "Lobby creation (GM-only) + auto-membership as DM",
-        "status": "open",
+        "status": "completed",
         "completedInSession": false
       },
       {

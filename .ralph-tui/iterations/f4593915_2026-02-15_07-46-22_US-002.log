@@ -1,0 +1,86 @@
+# Iteration 1 Log
+
+## Metadata
+
+- **Task ID**: US-002
+- **Task Title**: Lobby creation (GM-only) + auto-membership as DM
+- **Description**: As a GM, I want to create a lobby so that I can run an open table.
+- **Status**: completed
+- **Task Completed**: Yes
+- **Promise Detected**: Yes
+- **Started At**: 2026-02-15T06:46:22.810Z
+- **Ended At**: 2026-02-15T06:48:48.336Z
+- **Duration**: 2m 25s
+- **Agent**: opencode
+- **Sandbox Mode**: auto
+- **Sandbox Network**: Enabled
+--- RAW OUTPUT ---
+[94m[read][0m
+[94m[read][0m
+[94m[glob][0m [95m/home/sc/workspace/ied[0m pattern: [96msrc/app/**/*.py[0m
+[94m[glob][0m [95m/home/sc/workspace/ied[0m pattern: [96mdocs/**/*.md[0m
+[94m[read][0m
+[94m[read][0m
+[94m[read][0m
+[94m[read][0m
+[94m[read][0m
+[94m[glob][0m [95m/home/sc/workspace/ied[0m pattern: [96mtests/**/*.py[0m
+[94m[glob][0m [95m/home/sc/workspace/ied[0m pattern: [96msrc/**/*.py[0m
+[94m[read][0m
+[94m[read][0m
+[94m[read][0m
+[94m[read][0m
+[94m[read][0m
+[94m[apply_patch][0m
+[94m[apply_patch][0m
+[94m[apply_patch][0m
+[94m[apply_patch][0m
+[94m[apply_patch][0m
+[94m[bash][0m Run Ruff lint checks $ uv run ruff check .
+[94m[bash][0m Check formatting with Ruff $ uv run ruff format --check .
+[94m[bash][0m Run pytest test suite $ uv run pytest
+[94m[bash][0m Run mypy type checking $ uv run mypy src
+[94m[apply_patch][0m
+[94m[read][0m
+[94m[apply_patch][0m
+[94m[bash][0m Check formatting with Ruff $ uv run ruff format --check .
+[94m[bash][0m Run Ruff lint checks $ uv run ruff check .
+[94m[bash][0m Run pytest suite $ uv run pytest
+[94m[bash][0m Run mypy type checking $ uv run mypy src
+[94m[bash][0m Show changed files summary $ git status --short
+[94m[bash][0m Review implemented code changes $ git diff -- src/app/models.py src/app/schemas.py src/app/routers/lobbies.py src/main.py src/app/rout...
+[94m[read][0m
+[94m[apply_patch][0m
+Implemented US-002 end-to-end with GM-only lobby creation, DM auto-membership, and member-gated lobby details.
+
+- Added lobby domain models in `src/app/models.py`:
+  - `AccountType.PLAYER` (forward-compatible)
+  - `Lobby`
+  - `LobbyMember`
+  - `LobbyMemberStatus.ACTIVE`
+  - unique index on `(lobby_id, user_id)` for membership uniqueness
+- Added lobby API schemas in `src/app/schemas.py`:
+  - `LobbyCreateRequest`
+  - `LobbyMemberResponse`
+  - `LobbyDetailResponse`
+- Added new lobby router in `src/app/routers/lobbies.py`:
+  - `POST /api/lobbies` (auth required, `gm` only, auto-creates DM member with `status=active`)
+  - `GET /api/lobbies/{lobby_id}` (only accessible to members of that lobby)
+  - app-level DM invariant check (`exactly one dm` member) in response assembly
+- Wired router in `src/main.py`.
+- Fixed a mypy-blocking issue in existing auth code (`src/app/routers/auth.py`) by using `session_id=` when building `WhoAmIResponse`.
+- Appended required progress/logging in `.ralph-tui/progress.md` and added a reusable pattern under `## Codebase Patterns`.
+
+Quality checks run:
+- `uv run ruff check .` ✅
+- `uv run ruff format --check .` ✅
+- `uv run mypy src` ✅
+- `uv run pytest` ✅ (no tests collected)
+
+External files loaded for this task:
+- `docs/systemPatterns.md`
+- `docs/projectBrief.md`
+- `.ralph-tui/progress.md`
+- Attempted `docs/techContext.md` per instruction, but file does not exist in repo.
+
+<promise>COMPLETE</promise>
