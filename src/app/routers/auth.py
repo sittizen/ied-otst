@@ -45,9 +45,7 @@ def gm_register(payload: GMRegisterRequest, db: Session = Depends(get_db)) -> Wh
 
 
 @router.post("/login", response_model=WhoAmIResponse)
-def login(
-    payload: LoginRequest, response: Response, db: Session = Depends(get_db)
-) -> WhoAmIResponse:
+def login(payload: LoginRequest, response: Response, db: Session = Depends(get_db)) -> WhoAmIResponse:
     email = normalize_email(str(payload.email))
     user = db.execute(select(User).where(User.email == email)).scalars().first()
     if not user or not verify_password(payload.password, user.password_hash):

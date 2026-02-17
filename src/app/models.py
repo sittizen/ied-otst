@@ -57,9 +57,7 @@ class Lobby(Base):
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     name: Mapped[str] = mapped_column(String(100), nullable=False)
-    created_by_user_id: Mapped[str] = mapped_column(
-        String(36), ForeignKey("users.id"), nullable=False
-    )
+    created_by_user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id"), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, nullable=False)
 
     created_by_user: Mapped[User] = relationship()
@@ -71,9 +69,7 @@ class LobbyMember(Base):
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     lobby_id: Mapped[str] = mapped_column(String(36), ForeignKey("lobbies.id"), nullable=False)
-    user_id: Mapped[str | None] = mapped_column(
-        String(36), ForeignKey("users.id"), nullable=True, default=None
-    )
+    user_id: Mapped[str | None] = mapped_column(String(36), ForeignKey("users.id"), nullable=True, default=None)
     target_email: Mapped[str | None] = mapped_column(String(320), nullable=True, default=None)
     status: Mapped[LobbyMemberStatus] = mapped_column(
         Enum(LobbyMemberStatus), nullable=False, default=LobbyMemberStatus.ACTIVE
@@ -99,9 +95,7 @@ class Invite(Base):
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     lobby_id: Mapped[str] = mapped_column(String(36), ForeignKey("lobbies.id"), nullable=False)
-    created_by_user_id: Mapped[str] = mapped_column(
-        String(36), ForeignKey("users.id"), nullable=False
-    )
+    created_by_user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id"), nullable=False)
     target_email: Mapped[str] = mapped_column(String(320), nullable=False)
     token_hash: Mapped[str] = mapped_column(String(64), nullable=False)
     expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)

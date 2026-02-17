@@ -123,10 +123,7 @@ def create_email_invite(
     if existing_user:
         raise HTTPException(
             status_code=409,
-            detail=(
-                "Target email already belongs to an existing user. "
-                "Use user_id invites for existing users."
-            ),
+            detail=("Target email already belongs to an existing user. Use user_id invites for existing users."),
         )
 
     member_stmt = select(LobbyMember).where(
