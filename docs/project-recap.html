@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Recap: Open Table RPG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700&family=Noto+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: isDark ? '#1e3a5f' : '#dbeafe',
+        primaryBorderColor: isDark ? '#3b82f6' : '#2563eb',
+        primaryTextColor: isDark ? '#e6edf3' : '#1e3a5f',
+        secondaryColor: isDark ? '#14532d' : '#dcfce7',
+        secondaryBorderColor: isDark ? '#22c55e' : '#16a34a',
+        secondaryTextColor: isDark ? '#e6edf3' : '#14532d',
+        tertiaryColor: isDark ? '#451a03' : '#fef3c7',
+        tertiaryBorderColor: isDark ? '#d97706' : '#f59e0b',
+        tertiaryTextColor: isDark ? '#e6edf3' : '#451a03',
+        lineColor: isDark ? '#4b5563' : '#9ca3af',
+        fontSize: '14px',
+        fontFamily: 'var(--font-body)',
+      }
+    });
+  </script>
+  <style>
+    :root {
+      --font-body: 'Crimson Pro', Georgia, serif;
+      --font-mono: 'Noto Sans Mono', 'Courier New', monospace;
+
+      --bg: #faf9f7;
+      --surface: #ffffff;
+      --surface-elevated: #fefefe;
+      --border: rgba(30, 58, 95, 0.12);
+      --border-bright: rgba(30, 58, 95, 0.25);
+      --text: #1e3a5f;
+      --text-dim: #64748b;
+
+      --accent: #2563eb;
+      --accent-dim: rgba(37, 99, 235, 0.08);
+
+      --blue: #2563eb;
+      --blue-dim: rgba(37, 99, 235, 0.1);
+      --green: #16a34a;
+      --green-dim: rgba(22, 163, 74, 0.1);
+      --amber: #d97706;
+      --amber-dim: rgba(217, 119, 6, 0.1);
+      --red: #dc2626;
+      --red-dim: rgba(220, 38, 38, 0.1);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0c1222;
+        --surface: #162033;
+        --surface-elevated: #1c2a42;
+        --border: rgba(255, 255, 255, 0.08);
+        --border-bright: rgba(255, 255, 255, 0.15);
+        --text: #e2e8f0;
+        --text-dim: #94a3b8;
+
+        --accent: #60a5fa;
+        --accent-dim: rgba(96, 165, 250, 0.12);
+
+        --blue: #60a5fa;
+        --blue-dim: rgba(96, 165, 250, 0.15);
+        --green: #4ade80;
+        --green-dim: rgba(74, 222, 128, 0.15);
+        --amber: #fbbf24;
+        --amber-dim: rgba(251, 191, 36, 0.15);
+        --red: #f87171;
+        --red-dim: rgba(248, 113, 113, 0.15);
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--text);
+      background: var(--bg);
+      background-image: 
+        radial-gradient(at 20% 0%, var(--blue-dim) 0%, transparent 50%),
+        radial-gradient(at 80% 100%, var(--green-dim) 0%, transparent 50%);
+      padding: 40px;
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 0 48px;
+    }
+
+    .main { min-width: 0; }
+
+    .toc {
+      position: sticky;
+      top: 24px;
+      align-self: start;
+      padding: 16px 0;
+      grid-row: 1 / -1;
+    }
+
+    .toc-title {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      padding: 0 0 12px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .toc a {
+      display: block;
+      font-size: 11px;
+      color: var(--text-dim);
+      text-decoration: none;
+      padding: 5px 8px;
+      border-radius: 5px;
+      border-left: 2px solid transparent;
+      transition: all 0.15s;
+      line-height: 1.4;
+      margin-bottom: 2px;
+    }
+
+    .toc a:hover { color: var(--text); background: var(--surface); }
+    .toc a.active { color: var(--text); border-left-color: var(--accent); }
+
+    h1 {
+      font-size: 42px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .subtitle {
+      font-size: 18px;
+      color: var(--text-dim);
+      margin-bottom: 32px;
+      font-weight: 400;
+    }
+
+    h2 {
+      font-size: 13px;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-dim);
+      margin: 36px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h2:first-of-type { margin-top: 0; }
+
+    .node {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 22px;
+      position: relative;
+    }
+
+    .node--hero {
+      background: color-mix(in srgb, var(--surface) 94%, var(--accent) 6%);
+      box-shadow: 0 3px 16px rgba(0, 0, 0, 0.06);
+      border-color: color-mix(in srgb, var(--border) 60%, var(--accent) 40%);
+      padding: 24px 28px;
+    }
+
+    .node--elevated {
+      background: var(--surface-elevated);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .node--recessed {
+      background: color-mix(in srgb, var(--bg) 60%, var(--surface) 40%);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .node__label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .node__label::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .node p { margin-bottom: 10px; }
+    .node p:last-child { margin-bottom: 0; }
+
+    .mermaid-wrap {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      overflow: auto;
+      margin: 16px 0;
+    }
+
+    .mermaid-wrap .mermaid { transition: transform 0.2s ease; transform-origin: top center; }
+
+    .zoom-controls {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      display: flex;
+      gap: 2px;
+      z-index: 10;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 2px;
+    }
+
+    .zoom-controls button {
+      width: 26px;
+      height: 26px;
+      border: none;
+      background: transparent;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .zoom-controls button:hover { background: var(--border); color: var(--text); }
+
+    .mermaid-wrap.is-zoomed { cursor: grab; }
+    .mermaid-wrap.is-panning { cursor: grabbing; user-select: none; }
+
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+
+    .kpi-card {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .kpi-card__value {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      line-height: 1.1;
+    }
+
+    .kpi-card__label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    .kpi-card--working .kpi-card__value { color: var(--green); }
+    .kpi-card--progress .kpi-card__value { color: var(--blue); }
+    .kpi-card--broken .kpi-card__value { color: var(--red); }
+    .kpi-card--blocked .kpi-card__value { color: var(--amber); }
+
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: var(--blue-dim);
+      color: var(--blue);
+    }
+
+    .tag--green { background: var(--green-dim); color: var(--green); }
+    .tag--amber { background: var(--amber-dim); color: var(--amber); }
+    .tag--red { background: var(--red-dim); color: var(--red); }
+
+    .debt-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--amber);
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+    }
+
+    .debt-card--high { border-left-color: var(--red); }
+    .debt-card--medium { border-left-color: var(--amber); }
+    .debt-card--low { border-left-color: var(--blue); }
+
+    .debt-card__header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .debt-card__severity {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: var(--amber-dim);
+      color: var(--amber);
+    }
+
+    .debt-card--high .debt-card__severity { background: var(--red-dim); color: var(--red); }
+    .debt-card--low .debt-card__severity { background: var(--blue-dim); color: var(--blue); }
+
+    .debt-card__title {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .debt-card__suggestion {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    .decision-log {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .decision-item {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .decision-item:last-child { border-bottom: none; }
+
+    .decision-item__what {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .decision-item__why {
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 20px;
+      border-left: 2px solid var(--border);
+      margin-left: 8px;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 16px;
+      padding-bottom: 20px;
+    }
+
+    .timeline-item:last-child { padding-bottom: 0; }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -7px;
+      top: 4px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 2px solid var(--accent);
+    }
+
+    .timeline-item--feat::before { border-color: var(--green); }
+    .timeline-item--infra::before { border-color: var(--blue); }
+    .timeline-item--doc::before { border-color: var(--amber); }
+
+    .timeline-item__date {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-bottom: 2px;
+    }
+
+    .timeline-item__title {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+
+    .timeline-item__desc {
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+
+    .mental-model-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .mental-model-list li {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      padding-left: 14px;
+    }
+
+    .mental-model-list li::before {
+      content: '›';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .mental-model-list li:last-child { border-bottom: none; }
+
+    .mental-model-list strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .next-steps-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .next-steps-list li {
+      padding: 10px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 8px;
+      position: relative;
+      padding-left: 28px;
+    }
+
+    .next-steps-list li::before {
+      content: '→';
+      position: absolute;
+      left: 10px;
+      color: var(--accent);
+    }
+
+    details.collapsible {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 16px 0;
+    }
+
+    details.collapsible summary {
+      padding: 12px 16px;
+      background: var(--surface);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    details.collapsible summary::-webkit-details-marker { display: none; }
+    details.collapsible summary::before {
+      content: '▸';
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+
+    details.collapsible[open] summary::before { transform: rotate(90deg); }
+
+    details.collapsible .collapsible__body {
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      line-height: 1.6;
+      background: var(--surface);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .node, .kpi-card, .debt-card, .decision-item, .timeline-item {
+      animation: fadeUp 0.4s ease-out both;
+    }
+
+    @media (max-width: 900px) {
+      .wrap { grid-template-columns: 1fr; padding-top: 0; }
+      body { padding: 20px; }
+      .toc {
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        max-height: none;
+        display: flex;
+        gap: 4px;
+        overflow-x: auto;
+        background: var(--bg);
+        border-bottom: 1px solid var(--border);
+        padding: 10px 0;
+        margin: 0 -20px;
+        padding-left: 20px;
+        padding-right: 20px;
+        grid-row: auto;
+      }
+      .toc-title { display: none; }
+      .toc a {
+        white-space: nowrap;
+        flex-shrink: 0;
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        border-radius: 4px 4px 0 0;
+      }
+      .toc a.active { border-bottom-color: var(--accent); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="toc" id="toc">
+      <div class="toc-title">Contents</div>
+      <a href="#s1">1. Identity</a>
+      <a href="#s2">2. Architecture</a>
+      <a href="#s3">3. Recent Activity</a>
+      <a href="#s4">4. Decisions</a>
+      <a href="#s5">5. State of Things</a>
+      <a href="#s6">6. Mental Model</a>
+      <a href="#s7">7. Debt Hotspots</a>
+      <a href="#s8">8. Next Steps</a>
+    </nav>
+
+    <div class="main">
+      <h1>Open Table RPG</h1>
+      <p class="subtitle">Backend API for managing tabletop RPG sessions, lobbies, and player invites</p>
+
+      <div id="s1" class="sec-head" style="display:none;"></div>
+      <h2>Project Identity</h2>
+      <div class="node node--hero" style="--i: 0;">
+        <div class="node__label">Current State</div>
+        <p><strong>ied-otst</strong> — a FastAPI backend for organizing <em>open-table RPG sessions</em> where players drop in and out across sessions.</p>
+        <p style="margin-top: 12px;">
+          <span class="tag">v0.1.0</span>
+          <span class="tag tag--green">MVP In Progress</span>
+          <span class="tag">FastAPI</span>
+          <span class="tag">SQLAlchemy</span>
+        </p>
+        <p style="margin-top: 12px; color: var(--text-dim); font-size: 14px;">
+          Elevator pitch: <em>"A REST API that handles who can access which RPG lobby and how players join/leave — with strict GM/player separation and lobby isolation."</em>
+        </p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px;">
+        <div class="node" style="--i: 1;">
+          <div class="node__label">Key Dependencies</div>
+          <ul class="node-list" style="margin-top: 8px;">
+            <li><code>fastapi</code> — web framework</li>
+            <li><code>pydantic</code> — validation</li>
+            <li><code>sqlalchemy</code> — ORM</li>
+            <li><code>argon2-cffi</code> — password hashing</li>
+            <li><code>uvicorn</code> — server</li>
+          </ul>
+        </div>
+        <div class="node" style="--i: 2;">
+          <div class="node__label">Target Runtime</div>
+          <ul class="node-list" style="margin-top: 8px;">
+            <li>Python <code>3.13.12</code></li>
+            <li>Dev: SQLite <code>app.db</code></li>
+            <li>Prod: PostgreSQL</li>
+            <li><code>uv</code> package manager</li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="s2" class="sec-head" style="display:none;"></div>
+      <h2>Architecture Snapshot</h2>
+      <div class="mermaid-wrap">
+        <div class="zoom-controls">
+          <button onclick="zoomDiagram(this, 1.2)" title="Zoom in">+</button>
+          <button onclick="zoomDiagram(this, 0.8)" title="Zoom out">−</button>
+          <button onclick="resetZoom(this)" title="Reset zoom">↺</button>
+        </div>
+        <pre class="mermaid">
+flowchart TB
+  Client[HTTP Client] -->|HTTP| FastAPI[FastAPI App]
+  FastAPI -->|includes| Routers[Routers Layer]
+  
+  subgraph "src/app/"
+    Routers --> Auth[auth.py<br/>GM Register<br/>Login/Logout]
+    Routers --> Lobbies[lobbies.py<br/>Lobby CRUD<br/>Email Invites]
+    Routers --> Deps[deps.py<br/>get_current_user]
+    Routers --> Security[security.py<br/>Password hashing<br/>Session mgmt]
+    Deps --> DB[(SQLite<br/>PostgreSQL)]
+    Security --> DB
+    Routers --> DB
+  end
+  
+  subgraph Models
+    User[User<br/>GM/Player types]
+    Session[Session<br/>Cookie-based]
+    Lobby[Lobby<br/>GM-created]
+    LobbyMember[LobbyMember<br/>Members + invites]
+    Invite[Invite<br/>Token-based]
+  end
+  
+  DB -.->|creates| Models
+  classDef model fill:#dbeafe,stroke:#2563eb,stroke-width:1px
+  class User,Session,Lobby,LobbyMember,Invite model
+        </pre>
+      </div>
+
+      <div id="s3" class="sec-head" style="display:none;"></div>
+      <h2>Recent Activity</h2>
+      <div class="timeline">
+        <div class="timeline-item timeline-item--feat">
+          <div class="timeline-item__date">Feb 15</div>
+          <div class="timeline-item__title">US-003: Email Invite System</div>
+          <div class="timeline-item__desc">Added <code>POST /api/lobbies/{id}/invites/email</code> — generates token URLs bound to email, expires in 7 days. Reuses <code>LobbyMember</code> for pending invites to keep state consistent.</div>
+        </div>
+        <div class="timeline-item timeline-item--feat">
+          <div class="timeline-item__date">Feb 15</div>
+          <div class="timeline-item__title">US-002: Lobby Creation</div>
+          <div class="timeline-item__desc">GM-only <code>POST /api/lobbies</code> with auto-membership as DM. Added <code>GET /api/lobbies/{id}</code> with member-only auth checks.</div>
+        </div>
+        <div class="timeline-item timeline-item--feat">
+          <div class="timeline-item__date">Feb 14</div>
+          <div class="timeline-item__title">US-001: GM Registration + Sessions</div>
+          <div class="timeline-item__desc">Account registration, login/logout, cookie-based sessions with 14-day TTL.</div>
+        </div>
+        <div class="timeline-item timeline-item--infra">
+          <div class="timeline-item__date">Feb 14–16</div>
+          <div class="timeline-item__title">Infrastructure Setup</div>
+          <div class="timeline-item__desc">Moved app to <code>src/</code>, added <code>poe</code> tasks for test/lint/format, configured gitignore, cleaned up uv.lock.</div>
+        </div>
+        <div class="timeline-item timeline-item--doc">
+          <div class="timeline-item__date">Feb 14–18</div>
+          <div class="timeline-item__title">Documentation</div>
+          <div class="timeline-item__desc">Moved Obsidian vault to <code>docs/</code>, created <code>projectBrief.md</code> and <code>systemPatterns.md</code>.</div>
+        </div>
+      </div>
+
+      <div id="s4" class="sec-head" style="display:none;"></div>
+      <h2>Decision Log</h2>
+      <div class="decision-log">
+        <div class="decision-item">
+          <div class="decision-item__what">Cookie-based sessions (not JWT)</div>
+          <div class="decision-item__why">Server-side sessions allow explicit revocation, TTL enforcement, and fit the stateless API model. JWTs would require blacklist or short TTLs for logout.</div>
+        </div>
+        <div class="decision-item">
+          <div class="decision-item__what">Invite state via LobbyMember, not separate model</div>
+          <div class="decision-item__why">Pre-registration invites stored as <code>LobbyMember</code> with <code>user_id=None</code>, <code>target_email</code>, <code>status=invited</code>. Keeps lobby state visible before account creation without separate projection layer.</div>
+        </div>
+        <div class="decision-item">
+          <div class="decision-item__what">Lobby-scoped auth composes get_current_user + LobbyMember lookup</div>
+          <div class="decision-item__why">Every lobby endpoint verifies caller is a member via <code>lobby_id + user_id</code> lookup, returns 403 when not a member. Enforces strict per-lobby isolation.</div>
+        </div>
+        <div class="decision-item">
+          <div class="decision-item__what">Email normalization to lowercase + trimmed</div>
+          <div class="decision-item__why">Enforces global uniqueness via DB index. GM accounts and player accounts share email namespace — same email can't be both GM and player.</div>
+        </div>
+        <div class="decision-item">
+          <div class="decision-item__what">SQLite dev, PostgreSQL prod</div>
+          <div class="decision-item__why">Fast iteration locally, production-ready for deployment. No Alembic migrations yet — tables created via <code>Base.metadata.create_all()</code>.</div>
+        </div>
+      </div>
+
+      <div id="s5" class="sec-head" style="display:none;"></div>
+      <h2>State of Things</h2>
+      <div class="kpi-row">
+        <div class="kpi-card kpi-card--working">
+          <div class="kpi-card__value">3</div>
+          <div class="kpi-card__label">Features Shipped</div>
+        </div>
+        <div class="kpi-card kpi-card--progress">
+          <div class="kpi-card__value">2</div>
+          <div class="kpi-card__label">Open Branches</div>
+        </div>
+        <div class="kpi-card kpi-card--broken">
+          <div class="kpi-card__value">6</div>
+          <div class="kpi-card__label">Test TODOs</div>
+        </div>
+        <div class="kpi-card kpi-card--blocked">
+          <div class="kpi-card__value">0</div>
+          <div class="kpi-card__label">Blocked Items</div>
+        </div>
+      </div>
+
+      <details class="collapsible">
+        <summary>Working — Shipped and Stable</summary>
+        <div class="collapsible__body">
+          <ul class="node-list">
+            <li><code>POST /api/gm/register</code> — GM account creation with duplicate email handling</li>
+            <li><code>POST /api/login</code>, <code>POST /api/logout</code> — session management</li>
+            <li><code>POST /api/lobbies</code> — GM-only lobby creation with auto-DM membership</li>
+            <li><code>GET /api/lobbies/{id}</code> — lobby details with member-only auth</li>
+            <li><code>POST /api/lobbies/{id}/invites/email</code> — email invite with token URL</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="collapsible">
+        <summary>In Progress — Active Work</summary>
+        <div class="collapsible__body">
+          <ul class="node-list">
+            <li>Branch <code>ralph-parallel/US-005</code> — likely user story 005</li>
+            <li>Branch <code>ralph-session/cd521119</code> — session-related work</li>
+            <li>Test plan for GM register: 6 TODO tests written but not implemented</li>
+          </ul>
+        </div>
+      </details>
+
+      <div id="s6" class="sec-head" style="display:none;"></div>
+      <h2>Mental Model Essentials</h2>
+      <div class="node">
+        <ul class="mental-model-list">
+          <li><strong>GM-only lobby creation:</strong> Only users with <code>account_type = GM</code> can create lobbies. Players cannot create lobbies.</li>
+          <li><strong>One DM per lobby:</strong> The creator is automatically the DM (<code>is_dm=True</code>, <code>status=active</code>). Invariant enforced in code.</li>
+          <li><strong>Email is globally unique:</strong> Same email can't be both GM and player. Need separate accounts to participate in different roles.</li>
+          <li><strong>Invites reuse LobbyMember:</strong> Pending invites are <code>LobbyMember</code> rows with <code>user_id=None</code>, <code>target_email</code> set, <code>status=invited</code>.</li>
+          <li><strong>Invite tokens are single-use:</strong> Token expires in 7 days, marked <code>used_at</code> on acceptance. Not reusable.</li>
+          <li><strong>Session auth via cookie:</strong> <code>get_current_user</code> reads <code>session_id</code> cookie, validates session exists and not expired/revoked.</li>
+          <li><strong>Lobby isolation:</strong> All lobby endpoints check membership (<code>lobby_id + user_id</code>). No cross-lobby access possible.</li>
+        </ul>
+      </div>
+
+      <div id="s7" class="sec-head" style="display:none;"></div>
+      <h2>Cognitive Debt Hotspots</h2>
+      <div class="debt-card debt-card--medium">
+        <div class="debt-card__header">
+          <span class="debt-card__severity">Medium</span>
+          <span class="debt-card__title">Missing test implementations</span>
+        </div>
+        <p>6 test cases written in <code>tests/app/routers/auth/TestPlan_gm_register.md</code> but not implemented. Cover happy path, duplicate email, rollback failures, email normalization edge cases, commit failures, and race conditions.</p>
+        <p class="debt-card__suggestion">Implement the test cases in <code>tests/app/routers/auth/</code> following the fixture requirements in the test plan.</p>
+      </div>
+
+      <div class="debt-card debt-card--low">
+        <div class="debt-card__header">
+          <span class="debt-card__severity">Low</span>
+          <span class="debt-card__title">Missing techContext.md</span>
+        </div>
+        <p>Agent instructions reference <code>docs/techContext.md</code> but it doesn't exist in the repo. Implementation relies on <code>systemPatterns.md</code> and <code>projectBrief.md</code> instead.</p>
+        <p class="debt-card__suggestion">Create <code>docs/techContext.md</code> if additional technical context is needed, or update agent instructions to reference existing docs.</p>
+      </div>
+
+      <div class="debt-card debt-card--low">
+        <div class="debt-card__header">
+          <span class="debt-card__severity">Low</span>
+          <span class="debt-card__title">No database migrations</span>
+        </div>
+        <p>Tables created via <code>Base.metadata.create_all()</code> at startup. No Alembic for schema evolution. Works for dev, needs migration setup for prod schema changes.</p>
+        <p class="debt-card__suggestion">Add Alembic when schema stabilizes or before adding production deployment.</p>
+      </div>
+
+      <div id="s8" class="sec-head" style="display:none;"></div>
+      <h2>Next Steps</h2>
+      <ul class="next-steps-list">
+        <li>Complete US-005 (branch <code>ralph-parallel/US-005</code>) — likely additional lobby or player functionality</li>
+        <li>Finish session work on branch <code>ralph-session/cd521119</code></li>
+        <li>Implement test cases for GM register endpoint (6 TODOs in test plan)</li>
+        <li>Add remaining user stories: player invites by user ID, membership lifecycle (accept/decline/leave/ban)</li>
+        <li>Set up Alembic migrations before production deployment</li>
+      </ul>
+
+    </div>
+  </div>
+
+  <script>
+    function updateZoomState(wrap) {
+      var target = wrap.querySelector('.mermaid');
+      var zoom = parseFloat(target.dataset.zoom || '1');
+      wrap.classList.toggle('is-zoomed', zoom > 1);
+    }
+
+    function zoomDiagram(btn, factor) {
+      var wrap = btn.closest('.mermaid-wrap');
+      var target = wrap.querySelector('.mermaid');
+      var current = parseFloat(target.dataset.zoom || '1');
+      var next = Math.min(Math.max(current * factor, 0.3), 5);
+      target.dataset.zoom = next;
+      target.style.transform = 'scale(' + next + ')';
+      updateZoomState(wrap);
+    }
+
+    function resetZoom(btn) {
+      var wrap = btn.closest('.mermaid-wrap');
+      var target = wrap.querySelector('.mermaid');
+      target.dataset.zoom = '1';
+      target.style.transform = 'scale(1)';
+      updateZoomState(wrap);
+    }
+
+    document.querySelectorAll('.mermaid-wrap').forEach(function(wrap) {
+      wrap.addEventListener('wheel', function(e) {
+        if (!e.ctrlKey && !e.metaKey) return;
+        e.preventDefault();
+        var target = wrap.querySelector('.mermaid');
+        var current = parseFloat(target.dataset.zoom || '1');
+        var factor = e.deltaY < 0 ? 1.1 : 0.9;
+        var next = Math.min(Math.max(current * factor, 0.3), 5);
+        target.dataset.zoom = next;
+        target.style.transform = 'scale(' + next + ')';
+        updateZoomState(wrap);
+      }, { passive: false });
+
+      var startX, startY, scrollL, scrollT;
+      wrap.addEventListener('mousedown', function(e) {
+        if (e.target.closest('.zoom-controls')) return;
+        var target = wrap.querySelector('.mermaid');
+        if (parseFloat(target.dataset.zoom || '1') <= 1) return;
+        wrap.classList.add('is-panning');
+        startX = e.clientX;
+        startY = e.clientY;
+        scrollL = wrap.scrollLeft;
+        scrollT = wrap.scrollTop;
+      });
+      window.addEventListener('mousemove', function(e) {
+        if (!wrap.classList.contains('is-panning')) return;
+        wrap.scrollLeft = scrollL - (e.clientX - startX);
+        wrap.scrollTop = scrollT - (e.clientY - startY);
+      });
+      window.addEventListener('mouseup', function() {
+        wrap.classList.remove('is-panning');
+      });
+    });
+
+    (function() {
+      const toc = document.getElementById('toc');
+      const links = toc.querySelectorAll('a');
+      const sections = [];
+
+      links.forEach(link => {
+        const id = link.getAttribute('href').slice(1);
+        const el = document.getElementById(id);
+        if (el) sections.push({ id, el, link });
+      });
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            links.forEach(l => l.classList.remove('active'));
+            const match = sections.find(s => s.el === entry.target);
+            if (match) {
+              match.link.classList.add('active');
+              if (window.innerWidth <= 900) {
+                match.link.scrollIntoView({
+                  behavior: 'smooth', block: 'nearest', inline: 'center'
+                });
+              }
+            }
+          }
+        });
+      }, { rootMargin: '-10% 0px -80% 0px' });
+
+      sections.forEach(s => observer.observe(s.el));
+
+      links.forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          const id = link.getAttribute('href').slice(1);
+          const el = document.getElementById(id);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            history.replaceState(null, '', '#' + id);
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
