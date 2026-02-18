@@ -1,10 +1,16 @@
 __pycache__/
 *.py[cod]
 
+.cache/
+.local/
 .venv/
 .mypy_cache/
+.ralph-tui/
 .ruff_cache/
 .pytest_cache/
+
+.python_history
+.zshenv
 
 app.db
 *.sqlite3
